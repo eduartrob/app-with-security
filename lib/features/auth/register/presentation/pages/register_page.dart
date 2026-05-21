@@ -54,9 +54,6 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      ScreenProtector.preventScreenshotOff();
-    }
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
