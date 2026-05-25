@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_protector/screen_protector.dart';
+import '../../../../../core/services/security_service.dart';
 
 import '../provider/register_provider.dart';
 import '../../../login/presentation/widgets/custom_text_field.dart';
@@ -23,11 +23,11 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
+  late SecurityService _securityService;
+
   @override
   void initState() {
     super.initState();
-    // Medida de seguridad: Prevenir capturas de pantalla
-    _preventScreenshots();
 
     // Animaciones de entrada
     _animationController = AnimationController(
@@ -46,14 +46,16 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     _animationController.forward();
   }
 
-  Future<void> _preventScreenshots() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      await ScreenProtector.preventScreenshotOn();
-    }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _securityService = context.read<SecurityService>();
+    _securityService.preventScreenshots(true);
   }
 
   @override
   void dispose() {
+    _securityService.preventScreenshots(false);
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();

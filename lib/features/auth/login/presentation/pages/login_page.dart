@@ -2,15 +2,17 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_protector/screen_protector.dart';
+import '../../../../../core/services/storage_service.dart';
+import '../../../../../core/services/security_service.dart';
 import '../provider/login_provider.dart';
 import '../widgets/custom_text_field.dart';
 import '../../../../home/presentation/pages/home_page.dart';
 import '../../../register/presentation/pages/register_page.dart';
+import '../../../../../core/services/location_service.dart';
+import '../../../../security/presentation/pages/fake_gps_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -23,11 +25,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
+  late SecurityService _securityService;
+
   @override
   void initState() {
     super.initState();
-    // Prevenir capturas de pantalla solo en esta vista por ser sensible
-    _preventScreenshots();
 
     // Configurar animaciones suaves de entrada
     _animationController = AnimationController(
@@ -46,18 +48,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _animationController.forward();
   }
 
-  Future<void> _preventScreenshots() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      await ScreenProtector.preventScreenshotOn();
-    }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _securityService = context.read<SecurityService>();
+    _securityService.preventScreenshots(true);
   }
 
   @override
   void dispose() {
     // Permitir capturas nuevamente al salir de la vista sensible
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      ScreenProtector.preventScreenshotOff();
-    }
+    _securityService.preventScreenshots(false);
     _emailController.dispose();
     _passwordController.dispose();
     _animationController.dispose();
@@ -212,15 +213,29 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                         provider.login(
                                           _emailController.text.trim(),
                                           _passwordController.text.trim(),
-                                        ).then((_) {
+                                        ).then((_) async {
                                           if (provider.isSuccess && mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('¡Bienvenido!')),
-                                            );
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => const HomePage()),
-                                            );
+                                            final locationService = context.read<LocationService>();
+                                            bool isFakeGps = await locationService.isFakeGpsActive();
+
+                                            if (!mounted) return;
+
+                                            if (isFakeGps) {
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const FakeGpsPage()),
+                                              );
+                                            } else {
+                                              await context.read<StorageService>().setString('is_logged_in', 'true');
+                                              if (!mounted) return;
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('¡Bienvenido!')),
+                                              );
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const HomePage()),
+                                              );
+                                            }
                                           }
                                         });
                                       },

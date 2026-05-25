@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -268,8 +269,10 @@ class HomePage extends StatelessWidget {
             _buildNavButton(Icons.spa, 'Explore', false, Colors.transparent, textSecondary),
             // Botón de configuración actuará como "Cerrar sesión"
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 // Volver al login de forma abrupta simulando cerrar sesión
+                await context.read<StorageService>().remove('is_logged_in');
+                if (!context.mounted) return;
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),
