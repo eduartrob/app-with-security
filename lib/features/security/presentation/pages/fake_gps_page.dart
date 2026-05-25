@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:protection_information/l10n/app_localizations.dart';
 
 class FakeGpsPage extends StatefulWidget {
   const FakeGpsPage({Key? key}) : super(key: key);
@@ -52,6 +53,8 @@ class _FakeGpsPageState extends State<FakeGpsPage> with SingleTickerProviderStat
     const Color warningColor = Color(0xFFD65B5B);
     const Color warningLight = Color(0xFFFBEAEA);
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: bgBackground,
       body: SafeArea(
@@ -92,10 +95,10 @@ class _FakeGpsPageState extends State<FakeGpsPage> with SingleTickerProviderStat
                     const SizedBox(height: 32),
                     
                     // Title
-                    const Text(
-                      'Access Denied',
+                    Text(
+                      l10n.fakeGpsTitle,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 32,
                         fontWeight: FontWeight.w700,
@@ -107,10 +110,10 @@ class _FakeGpsPageState extends State<FakeGpsPage> with SingleTickerProviderStat
                     const SizedBox(height: 16),
                     
                     // Subtitle
-                    const Text(
-                      'Our security systems have detected the use of a Fake GPS or mock location app on your device.',
+                    Text(
+                      l10n.fakeGpsSubtitle,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 16,
                         color: textSecondary,
@@ -120,10 +123,10 @@ class _FakeGpsPageState extends State<FakeGpsPage> with SingleTickerProviderStat
                     const SizedBox(height: 16),
                     
                     // Additional info
-                    const Text(
-                      'To protect the integrity of our application, you cannot continue using it while location spoofing is active.',
+                    Text(
+                      l10n.fakeGpsWarning,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 14,
                         color: warningColor,
@@ -162,10 +165,10 @@ class _FakeGpsPageState extends State<FakeGpsPage> with SingleTickerProviderStat
                                 exit(0);
                               }
                             },
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                'Close Application',
-                                style: TextStyle(
+                                l10n.fakeGpsButton,
+                                style: const TextStyle(
                                   fontFamily: 'Plus Jakarta Sans',
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

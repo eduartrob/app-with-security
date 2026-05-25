@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:protection_information/l10n/app_localizations.dart';
 import '../../../../../core/services/storage_service.dart';
 import '../../../../../core/services/security_service.dart';
+import '../../../../../main.dart';
 import '../provider/login_provider.dart';
 import '../widgets/custom_text_field.dart';
 import '../../../../home/presentation/pages/home_page.dart';
@@ -75,6 +77,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     const Color onSurface = Color(0xFF1A1C1C);
     const Color primaryContainer = Color(0xFF8FA998);
     const Color onPrimaryContainer = Color(0xFF273E31);
+    
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: bgBackground,
@@ -116,9 +120,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     const SizedBox(height: 24),
                     
                     // Titulo
-                    const Text(
-                      'Welcome',
-                      style: TextStyle(
+                    Text(
+                      l10n.loginWelcomeBack,
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 40,
                         fontWeight: FontWeight.w600,
@@ -130,9 +134,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     const SizedBox(height: 8),
                     
                     // Subtitulo
-                    const Text(
-                      'Sign in to continue your journey.',
-                      style: TextStyle(
+                    Text(
+                      l10n.loginSubtitle,
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 16,
                         color: textSecondary,
@@ -143,7 +147,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     // Campos de texto
                     CustomTextField(
                       controller: _emailController,
-                      hintText: 'Email address',
+                      hintText: l10n.emailHint,
                       surfaceContainer: surfaceContainer,
                       onSurface: onSurface,
                       textSecondary: textSecondary,
@@ -151,7 +155,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     const SizedBox(height: 16),
                     CustomTextField(
                       controller: _passwordController,
-                      hintText: 'Password',
+                      hintText: l10n.passwordHint,
                       obscureText: true,
                       surfaceContainer: surfaceContainer,
                       onSurface: onSurface,
@@ -162,14 +166,23 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     Selector<LoginProvider, String?>(
                       selector: (_, provider) => provider.errorMessage,
                       builder: (context, errorMessage, _) {
-                        return errorMessage != null
+                        String? translatedError;
+                        if (errorMessage == 'errorEmptyFields') {
+                          translatedError = l10n.errorEmptyFields;
+                        } else if (errorMessage == 'errorInvalidCredentials') {
+                          translatedError = l10n.errorInvalidCredentials;
+                        } else {
+                          translatedError = errorMessage;
+                        }
+
+                        return translatedError != null
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 16.0),
                                 child: AnimatedOpacity(
                                   opacity: 1.0,
                                   duration: const Duration(milliseconds: 300),
                                   child: Text(
-                                    errorMessage,
+                                    translatedError,
                                     style: const TextStyle(color: Colors.redAccent, fontSize: 14),
                                   ),
                                 ),
@@ -221,6 +234,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                             if (!mounted) return;
 
                                             if (isFakeGps) {
+                                              isAppBlockedByFakeGps = true;
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(builder: (context) => const FakeGpsPage()),
@@ -229,7 +243,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                               await context.read<StorageService>().setString('is_logged_in', 'true');
                                               if (!mounted) return;
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('¡Bienvenido!')),
+                                                SnackBar(content: Text(l10n.loginSuccess)),
                                               );
                                               Navigator.pushReplacement(
                                                 context,
@@ -249,9 +263,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                             strokeWidth: 2,
                                           ),
                                         )
-                                      : const Text(
-                                          'Sign In',
-                                          style: TextStyle(
+                                      : Text(
+                                          l10n.signIn,
+                                          style: const TextStyle(
                                             fontFamily: 'Plus Jakarta Sans',
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -272,9 +286,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     // Enlaces de pie de pagina
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.forgotPassword,
+                        style: const TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -296,9 +310,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           MaterialPageRoute(builder: (context) => const RegisterPage()),
                         );
                       },
-                      child: const Text(
-                        'Create an account',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.signUp,
+                        style: const TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

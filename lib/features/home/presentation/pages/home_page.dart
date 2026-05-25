@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:protection_information/l10n/app_localizations.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
 
@@ -24,6 +25,8 @@ class HomePage extends StatelessWidget {
     const Color onSecondaryContainer = Color(0xFF65645E);
     const Color surfaceContainerLow = Color(0xFFF3F4F3);
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: bgBackground,
       appBar: AppBar(
@@ -47,9 +50,9 @@ class HomePage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        title: const Text(
-          'Serenity',
-          style: TextStyle(
+        title: Text(
+          l10n.homeTitle,
+          style: const TextStyle(
             fontFamily: 'Plus Jakarta Sans',
             fontSize: 24,
             fontWeight: FontWeight.w600,
@@ -72,9 +75,9 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Greeting
-            const Text(
-              'Good morning, Esduardo',
-              style: TextStyle(
+            Text(
+              l10n.homeGreeting('Esduardo'),
+              style: const TextStyle(
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -83,7 +86,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Ready to find your center today?',
+              l10n.homeSubtitle,
               style: TextStyle(
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 16,
@@ -115,7 +118,7 @@ class HomePage extends StatelessWidget {
                       const Icon(Icons.self_improvement, color: onPrimaryFixedVariant, size: 20),
                       const SizedBox(width: 8),
                       Text(
-                        'DAILY REFLECTION',
+                        l10n.homeDailyReflection,
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 12,
@@ -127,9 +130,9 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    '"Quiet the mind, and the\nsoul will speak."',
-                    style: TextStyle(
+                  Text(
+                    l10n.homeQuote,
+                    style: const TextStyle(
                       fontFamily: 'Plus Jakarta Sans',
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -148,12 +151,12 @@ class HomePage extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Start Session',
-                          style: TextStyle(
+                          l10n.homeStartSession,
+                          style: const TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -170,9 +173,9 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 48),
 
             // Practices
-            const Text(
-              'Practices',
-              style: TextStyle(
+            Text(
+              l10n.homePractices,
+              style: const TextStyle(
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -186,13 +189,13 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 clipBehavior: Clip.none,
                 children: [
-                  _buildPracticeItem('Mindfulness', Icons.spa, 'Meditate', surfaceContainer, textPrimary),
+                  _buildPracticeItem('Mindfulness', Icons.spa, l10n.practiceMindfulness, surfaceContainer, textPrimary),
                   const SizedBox(width: 16),
-                  _buildPracticeItem('Journal', Icons.book, 'Journal', surfaceContainer, textPrimary),
+                  _buildPracticeItem('Journal', Icons.book, l10n.practiceJournal, surfaceContainer, textPrimary),
                   const SizedBox(width: 16),
-                  _buildPracticeItem('Sleep', Icons.bedtime, 'Sleep', surfaceContainer, textPrimary),
+                  _buildPracticeItem('Sleep', Icons.bedtime, l10n.practiceSleep, surfaceContainer, textPrimary),
                   const SizedBox(width: 16),
-                  _buildPracticeItem('Yoga', Icons.sports_gymnastics, 'Yoga', surfaceContainer, textPrimary),
+                  _buildPracticeItem('Yoga', Icons.sports_gymnastics, l10n.practiceYoga, surfaceContainer, textPrimary),
                 ],
               ),
             ),
@@ -202,9 +205,9 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Recent Activity',
-                  style: TextStyle(
+                Text(
+                  l10n.homeRecentActivity,
+                  style: const TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -213,9 +216,9 @@ class HomePage extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: const Text(
-                    'View all',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.homeViewAll,
+                    style: const TextStyle(
                       fontFamily: 'Plus Jakarta Sans',
                       color: textPrimary,
                       fontWeight: FontWeight.w600,
@@ -226,8 +229,8 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _buildActivityItem(
-              '10 min Breathwork',
-              'Today, 7:30 AM',
+              l10n.activityBreathwork,
+              l10n.activityTimeToday,
               Icons.air,
               surfaceContainerLowest,
               secondaryContainer,
@@ -236,8 +239,8 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildActivityItem(
-              'Morning Stretch',
-              'Yesterday, 8:00 AM',
+              l10n.activityMorningStretch,
+              l10n.activityTimeYesterday,
               Icons.accessibility_new,
               surfaceContainerLowest,
               secondaryContainer,
@@ -264,9 +267,9 @@ class HomePage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavButton(Icons.home, 'Home', true, primaryContainer, onPrimaryContainer),
-            _buildNavButton(Icons.self_improvement, 'Reflect', false, Colors.transparent, textSecondary),
-            _buildNavButton(Icons.spa, 'Explore', false, Colors.transparent, textSecondary),
+            _buildNavButton(Icons.home, l10n.navHome, true, primaryContainer, onPrimaryContainer),
+            _buildNavButton(Icons.self_improvement, l10n.navReflect, false, Colors.transparent, textSecondary),
+            _buildNavButton(Icons.spa, l10n.navExplore, false, Colors.transparent, textSecondary),
             // Botón de configuración actuará como "Cerrar sesión"
             IconButton(
               onPressed: () async {

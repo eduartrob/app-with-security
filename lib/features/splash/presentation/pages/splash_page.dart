@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/services/storage_service.dart';
+import '../../../../../core/services/storage_service.dart';
+import '../../../../../core/services/location_service.dart';
+import '../../../../main.dart';
+import '../../../security/presentation/pages/fake_gps_page.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
 import '../../../home/presentation/pages/home_page.dart';
 
@@ -23,6 +26,21 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(const Duration(milliseconds: 1000));
     
     if (!mounted) return;
+    
+    // Validar Fake GPS en el arranque
+    final locationService = context.read<LocationService>();
+    final isFake = await locationService.isFakeGpsActive();
+    
+    if (!mounted) return;
+    if (isFake) {
+      isAppBlockedByFakeGps = true;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const FakeGpsPage()),
+      );
+      return;
+    }
+
     final storageService = context.read<StorageService>();
     final isLoggedIn = await storageService.getString('is_logged_in');
 

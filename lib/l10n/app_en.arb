@@ -1,0 +1,55 @@
+{
+  "loginWelcomeBack": "Welcome Back",
+  "loginSubtitle": "Please enter your details to sign in.",
+  "emailHint": "Email Address",
+  "passwordHint": "Password",
+  "forgotPassword": "Forgot Password?",
+  "signIn": "Sign In",
+  "orContinueWith": "OR CONTINUE WITH",
+  "dontHaveAccount": "Don't have an account?",
+  "signUp": "Sign up",
+  "loginSuccess": "Welcome!",
+  
+  "registerCreateAccount": "Create Account",
+  "registerSubtitle": "Begin your journey with a seamless and quiet experience.",
+  "fullNameHint": "Full Name",
+  "registerSuccess": "Account Created!",
+  "alreadyHaveAccount": "Already have an account?",
+  "logIn": "Log in",
+
+  "errorInvalidCredentials": "Email or password are incorrect.",
+  "errorEmptyFields": "Please fill all fields.",
+
+  "homeTitle": "Serenity",
+  "homeGreeting": "Good morning, {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSubtitle": "Ready to find your center today?",
+  "homeDailyReflection": "DAILY REFLECTION",
+  "homeQuote": "\"Quiet the mind, and the\\nsoul will speak.\"",
+  "homeStartSession": "Start Session",
+  "homePractices": "Practices",
+  "practiceMindfulness": "Mindfulness",
+  "practiceJournal": "Journal",
+  "practiceSleep": "Sleep",
+  "practiceYoga": "Yoga",
+  "homeRecentActivity": "Recent Activity",
+  "homeViewAll": "View all",
+  "activityBreathwork": "10 min Breathwork",
+  "activityMorningStretch": "Morning Stretch",
+  "activityTimeToday": "Today, 7:30 AM",
+  "activityTimeYesterday": "Yesterday, 8:00 AM",
+  "navHome": "Home",
+  "navReflect": "Reflect",
+  "navExplore": "Explore",
+
+  "fakeGpsTitle": "Access Denied",
+  "fakeGpsSubtitle": "Our security systems have detected the use of a Fake GPS or mock location app on your device.",
+  "fakeGpsWarning": "To protect the integrity of our application, you cannot continue using it while location spoofing is active.",
+  "fakeGpsButton": "Close Application"
+}

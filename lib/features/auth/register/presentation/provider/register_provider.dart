@@ -17,7 +17,7 @@ class RegisterProvider extends ChangeNotifier {
 
   Future<void> register(String fullName, String email, String password) async {
     if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
-      _errorMessage = 'Por favor, llene todos los campos.';
+      _errorMessage = 'errorEmptyFields';
       notifyListeners();
       return;
     }
@@ -35,11 +35,11 @@ class RegisterProvider extends ChangeNotifier {
         _errorMessage = null;
       } else {
         _isSuccess = false;
-        _errorMessage = 'Datos inválidos. Inténtalo de nuevo.';
+        _errorMessage = 'errorInvalidCredentials';
       }
     } catch (e) {
       _isSuccess = false;
-      _errorMessage = 'Error de conexión. Inténtelo de nuevo.';
+      _errorMessage = 'errorInvalidCredentials';
     } finally {
       _isLoading = false;
       notifyListeners();

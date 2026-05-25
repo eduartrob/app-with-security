@@ -17,7 +17,7 @@ class LoginProvider extends ChangeNotifier {
 
   Future<void> login(String username, String password) async {
     if (username.isEmpty || password.isEmpty) {
-      _errorMessage = 'Por favor, ingrese sus credenciales.';
+      _errorMessage = 'errorEmptyFields';
       notifyListeners();
       return;
     }
@@ -35,11 +35,11 @@ class LoginProvider extends ChangeNotifier {
         _errorMessage = null;
       } else {
         _isSuccess = false;
-        _errorMessage = 'Credenciales incorrectas.';
+        _errorMessage = 'errorInvalidCredentials';
       }
     } catch (e) {
       _isSuccess = false;
-      _errorMessage = 'Error de conexión. Inténtelo de nuevo.';
+      _errorMessage = 'errorInvalidCredentials';
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -2,6 +2,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:protection_information/l10n/app_localizations.dart';
 
 import 'features/auth/login/data/datasource/login_datasource.dart';
 import 'features/splash/presentation/pages/splash_page.dart';
@@ -35,7 +37,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+bool isAppBlockedByFakeGps = false;
+
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+
   @override
   void initState() {
     super.initState();
@@ -63,10 +68,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final isFake = await locationService.isFakeGpsActive();
     
     if (isFake) {
-      navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const FakeGpsPage()),
-        (route) => false,
-      );
+      if (!isAppBlockedByFakeGps) {
+        isAppBlockedByFakeGps = true;
+        navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const FakeGpsPage()),
+          (route) => false,
+        );
+      }
+    } else {
+      if (isAppBlockedByFakeGps) {
+        isAppBlockedByFakeGps = false;
+        // Si ya se quitó el Fake GPS, reiniciamos el flujo para que Splash decida a dónde ir
+        navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SplashPage()),
+          (route) => false,
+        );
+      }
     }
   }
 
@@ -100,6 +117,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Protection Information',
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', ''),
+          Locale('es', ''),
+        ],
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4C6455)),
           useMaterial3: true,

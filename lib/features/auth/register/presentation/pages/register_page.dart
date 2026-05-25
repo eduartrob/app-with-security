@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:protection_information/l10n/app_localizations.dart';
 import '../../../../../core/services/security_service.dart';
 
 import '../provider/register_provider.dart';
@@ -74,6 +75,8 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     const Color onPrimary = Color(0xFFFFFFFF);
     const Color outlineVariant = Color(0xFFC2C8C2);
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: bgBackground,
       body: SafeArea(
@@ -89,9 +92,9 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Titulo
-                    const Text(
-                      'Create Account',
-                      style: TextStyle(
+                    Text(
+                      l10n.registerCreateAccount,
+                      style: const TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 40,
                         fontWeight: FontWeight.w600,
@@ -103,12 +106,12 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     const SizedBox(height: 16),
                     
                     // Subtitulo
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        'Begin your journey with a seamless and quiet experience.',
+                        l10n.registerSubtitle,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 16,
                           color: textSecondary,
@@ -120,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     // Campos de texto
                     CustomTextField(
                       controller: _fullNameController,
-                      hintText: 'Full Name',
+                      hintText: l10n.fullNameHint,
                       surfaceContainer: surfaceContainer,
                       onSurface: onSurface,
                       textSecondary: textSecondary,
@@ -128,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     const SizedBox(height: 16),
                     CustomTextField(
                       controller: _emailController,
-                      hintText: 'Email Address',
+                      hintText: l10n.emailHint,
                       surfaceContainer: surfaceContainer,
                       onSurface: onSurface,
                       textSecondary: textSecondary,
@@ -136,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     const SizedBox(height: 16),
                     CustomTextField(
                       controller: _passwordController,
-                      hintText: 'Password',
+                      hintText: l10n.passwordHint,
                       obscureText: true,
                       surfaceContainer: surfaceContainer,
                       onSurface: onSurface,
@@ -147,14 +150,23 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     Selector<RegisterProvider, String?>(
                       selector: (_, provider) => provider.errorMessage,
                       builder: (context, errorMessage, _) {
-                        return errorMessage != null
+                        String? translatedError;
+                        if (errorMessage == 'errorEmptyFields') {
+                          translatedError = l10n.errorEmptyFields;
+                        } else if (errorMessage == 'errorInvalidCredentials') {
+                          translatedError = l10n.errorInvalidCredentials;
+                        } else {
+                          translatedError = errorMessage;
+                        }
+
+                        return translatedError != null
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 16.0),
                                 child: AnimatedOpacity(
                                   opacity: 1.0,
                                   duration: const Duration(milliseconds: 300),
                                   child: Text(
-                                    errorMessage,
+                                    translatedError,
                                     style: const TextStyle(color: Colors.redAccent, fontSize: 14),
                                   ),
                                 ),
@@ -193,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                                         ).then((_) {
                                           if (provider.isSuccess && mounted) {
                                             ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('¡Cuenta Creada!')),
+                                              SnackBar(content: Text(l10n.registerSuccess)),
                                             );
                                             // Redirigir al login (ya estamos en Register que fue pusheada desde Login, así que pop())
                                             Navigator.pop(context);
@@ -210,12 +222,12 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                                             strokeWidth: 2,
                                           ),
                                         )
-                                      : const Row(
+                                      : Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              'Create Account',
-                                              style: TextStyle(
+                                              l10n.registerCreateAccount,
+                                              style: const TextStyle(
                                                 fontFamily: 'Plus Jakarta Sans',
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -239,11 +251,11 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     Row(
                       children: [
                         Expanded(child: Container(height: 1, color: outlineVariant)),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            'OR CONTINUE WITH',
-                            style: TextStyle(
+                            l10n.orContinueWith,
+                            style: const TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
@@ -273,9 +285,9 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Already have an account? ',
-                          style: TextStyle(
+                        Text(
+                          '${l10n.alreadyHaveAccount} ',
+                          style: const TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
                             fontSize: 16,
                             color: textSecondary,
@@ -285,9 +297,9 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                           onTap: () {
                             Navigator.pop(context); // Vuelve al login
                           },
-                          child: const Text(
-                            'Log in',
-                            style: TextStyle(
+                          child: Text(
+                            l10n.logIn,
+                            style: const TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
