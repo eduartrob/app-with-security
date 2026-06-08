@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/services/storage_service.dart';
 import '../../../../../core/services/location_service.dart';
+import '../../../../../core/services/session_service.dart';
 import '../../../../main.dart';
 import '../../../security/presentation/pages/fake_gps_page.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
@@ -46,6 +47,7 @@ class _SplashPageState extends State<SplashPage> {
 
     if (!mounted) return;
     if (isLoggedIn == 'true') {
+      context.read<SessionService>().startSession();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomePage()),

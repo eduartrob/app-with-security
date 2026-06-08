@@ -14,6 +14,8 @@ import 'features/auth/register/presentation/provider/register_provider.dart';
 import 'core/services/location_service.dart';
 import 'core/services/security_service.dart';
 import 'core/services/storage_service.dart';
+import 'core/services/session_service.dart';
+import 'features/auth/login/presentation/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +31,7 @@ void main() {
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -57,6 +60,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _checkFakeGpsRealTime();
+      
+      // Checar si la sesión expiró mientras la app estaba en segundo plano
+      final currentContext = navigatorKey.currentContext;
+      if (currentContext != null) {
+        currentContext.read<SessionService>().checkBackgroundTimeout();
+      }
     }
   }
 
@@ -100,6 +109,36 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Provider<LocationService>(
           create: (_) => LocationService(),
         ),
+        ChangeNotifierProvider<SessionService>(
+          create: (context) {
+            final service = SessionService(context.read<StorageService>());
+            service.onSessionExpired = () {
+              navigatorKey.currentState?.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+                (route) => false,
+              );
+              
+              final currentContext = navigatorKey.currentContext;
+              
+              // Obtener el idioma actual si es posible, o usar un texto predeterminado
+              final l10n = currentContext != null ? AppLocalizations.of(currentContext) : null;
+              final message = l10n != null 
+                  ? 'Sesión cerrada por inactividad' // Hardcodeado por ahora
+                  : 'Sesión cerrada por inactividad';
+                  
+              // Usar el scaffoldMessengerKey global para que nunca falle sin importar el contexto
+              scaffoldMessengerKey.currentState?.showSnackBar(
+                SnackBar(
+                  content: Text(message),
+                  duration: const Duration(seconds: 4),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.redAccent,
+                ),
+              );
+            };
+            return service;
+          },
+        ),
         Provider<LoginDataSource>(
           create: (_) => LoginDataSource(),
         ),
@@ -115,8 +154,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
+        scaffoldMessengerKey: scaffoldMessengerKey,
         debugShowCheckedModeBanner: false,
         title: 'Protection Information',
+        builder: (context, child) {
+          return Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) => context.read<SessionService>().userInteracted(),
+            onPointerMove: (_) => context.read<SessionService>().userInteracted(),
+            onPointerUp: (_) => context.read<SessionService>().userInteracted(),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

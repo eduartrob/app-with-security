@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:protection_information/l10n/app_localizations.dart';
 import '../../../../../core/services/storage_service.dart';
+import '../../../../../core/services/session_service.dart';
 import '../../../../../core/services/security_service.dart';
 import '../../../../../main.dart';
 import '../provider/login_provider.dart';
@@ -242,6 +243,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                             } else {
                                               await context.read<StorageService>().setString('is_logged_in', 'true');
                                               if (!mounted) return;
+                                              context.read<SessionService>().startSession();
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(content: Text(l10n.loginSuccess)),
                                               );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:protection_information/l10n/app_localizations.dart';
 import '../../../../core/services/storage_service.dart';
+import '../../../../core/services/session_service.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -274,6 +275,7 @@ class HomePage extends StatelessWidget {
             IconButton(
               onPressed: () async {
                 // Volver al login de forma abrupta simulando cerrar sesión
+                context.read<SessionService>().stopSession();
                 await context.read<StorageService>().remove('is_logged_in');
                 if (!context.mounted) return;
                 Navigator.pushReplacement(
