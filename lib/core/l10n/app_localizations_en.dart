@@ -138,4 +138,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fakeGpsButton => 'Close Application';
+
+  @override
+  String get usbDebuggingTitle => 'Insecure Environment';
+
+  @override
+  String get usbDebuggingSubtitle =>
+      'USB Debugging has been detected as active on this device.';
+
+  @override
+  String get usbDebuggingWarning =>
+      'Due to security policies, this application cannot run in an environment with debugging enabled. Please disable this option in your system settings.';
 }

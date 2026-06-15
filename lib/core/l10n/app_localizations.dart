@@ -349,6 +349,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close Application'**
   String get fakeGpsButton;
+
+  /// No description provided for @usbDebuggingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insecure Environment'**
+  String get usbDebuggingTitle;
+
+  /// No description provided for @usbDebuggingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'USB Debugging has been detected as active on this device.'**
+  String get usbDebuggingSubtitle;
+
+  /// No description provided for @usbDebuggingWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Due to security policies, this application cannot run in an environment with debugging enabled. Please disable this option in your system settings.'**
+  String get usbDebuggingWarning;
 }
 
 class _AppLocalizationsDelegate

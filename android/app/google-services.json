@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "529308010079",
+    "project_id": "ciberseguridad-6a481",
+    "storage_bucket": "ciberseguridad-6a481.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529308010079:android:b74a1ce53b8b38dc83bdea",
+        "android_client_info": {
+          "package_name": "com.example.protection_information"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgImn1npnhJ1jzmXXCs0o38-Gg318fjAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

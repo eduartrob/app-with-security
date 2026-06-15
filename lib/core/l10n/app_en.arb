@@ -51,5 +51,9 @@
   "fakeGpsTitle": "Access Denied",
   "fakeGpsSubtitle": "Our security systems have detected the use of a Fake GPS or mock location app on your device.",
   "fakeGpsWarning": "To protect the integrity of our application, you cannot continue using it while location spoofing is active.",
-  "fakeGpsButton": "Close Application"
+  "fakeGpsButton": "Close Application",
+
+  "usbDebuggingTitle": "Insecure Environment",
+  "usbDebuggingSubtitle": "USB Debugging has been detected as active on this device.",
+  "usbDebuggingWarning": "Due to security policies, this application cannot run in an environment with debugging enabled. Please disable this option in your system settings."
 }

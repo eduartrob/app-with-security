@@ -20,4 +20,19 @@ class SecurityService {
     // pero para el objetivo actual de eliminar el warning de KGP en Android,
     // con esto es suficiente.
   }
+
+  /// Verifica nativamente si la Depuración USB (ADB) está activa en el sistema.
+  Future<bool> isUsbDebuggingEnabled() async {
+    if (kIsWeb) return false;
+    
+    if (Platform.isAndroid) {
+      try {
+        final bool isEnabled = await _channel.invokeMethod('isUsbDebuggingEnabled');
+        return isEnabled;
+      } on PlatformException catch (e) {
+        debugPrint("Error checking USB Debugging: '${e.message}'.");
+      }
+    }
+    return false;
+  }
 }

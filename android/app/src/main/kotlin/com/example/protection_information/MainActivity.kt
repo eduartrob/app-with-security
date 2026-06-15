@@ -1,5 +1,6 @@
 package com.example.protection_information
 
+import android.provider.Settings
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -19,6 +20,9 @@ class MainActivity: FlutterActivity() {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 }
                 result.success(null)
+            } else if (call.method == "isUsbDebuggingEnabled") {
+                val adbEnabled = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0)
+                result.success(adbEnabled == 1)
             } else {
                 result.notImplemented()
             }

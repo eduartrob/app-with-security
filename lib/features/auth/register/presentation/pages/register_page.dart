@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:protection_information/l10n/app_localizations.dart';
+import 'package:protection_information/core/l10n/app_localizations.dart';
 import '../../../../../core/services/security_service.dart';
 
 import '../provider/register_provider.dart';

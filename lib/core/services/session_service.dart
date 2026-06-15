@@ -5,7 +5,7 @@ import 'storage_service.dart';
 class SessionService extends ChangeNotifier {
   Timer? _timer;
   final StorageService _storageService;
-  final int _timeoutSeconds = 30;
+  final int _timeoutSeconds = 500;
   DateTime? _lastActivityTime;
 
   VoidCallback? onSessionExpired;

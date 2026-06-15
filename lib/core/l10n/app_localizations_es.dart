@@ -80,7 +80,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeDailyReflection => 'REFLEXIÓN DIARIA';
 
   @override
-  String get homeQuote => '\"Silencia la mente, y el\\nalma hablará.\"';
+  String get homeQuote => '\"Silencia la mente, y el alma hablará.\"';
 
   @override
   String get homeStartSession => 'Iniciar Sesión';
@@ -140,4 +140,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fakeGpsButton => 'Cerrar Aplicación';
+
+  @override
+  String get usbDebuggingTitle => 'Entorno Inseguro';
+
+  @override
+  String get usbDebuggingSubtitle =>
+      'Se ha detectado que la Depuración USB (USB Debugging) está activada en este dispositivo.';
+
+  @override
+  String get usbDebuggingWarning =>
+      'Por políticas de seguridad, esta aplicación no puede ejecutarse en un entorno con depuración habilitada. Por favor, desactive esta opción en los ajustes del sistema.';
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:protection_information/l10n/app_localizations.dart';
+import 'package:protection_information/core/l10n/app_localizations.dart';
 
 class FakeGpsPage extends StatefulWidget {
   const FakeGpsPage({Key? key}) : super(key: key);

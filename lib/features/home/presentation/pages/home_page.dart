@@ -1,12 +1,49 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:protection_information/l10n/app_localizations.dart';
+import 'package:protection_information/core/l10n/app_localizations.dart';
 import '../../../../core/services/storage_service.dart';
+import '../../../../core/services/secure_data_service.dart';
 import '../../../../core/services/session_service.dart';
+import '../../../../core/services/notification_history_service.dart';
+import '../../../../core/services/user_profile_service.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
+import '../../../../features/profile/presentation/pages/profile_page.dart';
+import '../../../../features/notifications/presentation/pages/notifications_page.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String? _fcmToken;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializar datos simulados si no existen
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final secureDataService = context.read<SecureDataService>();
+      await secureDataService.loadData();
+      
+      // Obtener el token de FCM para probar el borrado específico
+      try {
+        final token = await FirebaseMessaging.instance.getToken();
+        if (mounted) {
+          setState(() {
+            _fcmToken = token;
+          });
+          debugPrint("FCM Token: $_fcmToken");
+        }
+      } catch (e) {
+        debugPrint("Error getting FCM token: $e");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +74,31 @@ class HomePage extends StatelessWidget {
         leadingWidth: 72,
         leading: Padding(
           padding: const EdgeInsets.only(left: 24.0, top: 8, bottom: 8),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: surfaceContainer,
-              shape: BoxShape.circle,
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Image.network(
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuDOBXeIOIvnfiXVs847epzO_4T78oYoJIx6ysLlptu2hvKQUPqq_HEvjoayJNlLzBGehV4Xxq82fzEDplGXs55YQXQY26Vz1JnH8_V9lizCgAIAL7ciDUaRqbsboUVWColwtjml3VFKW8ezn6JlaXJC65cXTTHB4HvPWGA97a63k7gj-LnS17rcBLUD9pBMwCdgStNvAAvsgtvO-qWcpJXiAKT5pQEwnQowBszs3yFzL6IfY0RRN2-i9gXYXdCUkF0-HJHG7k4OCgM',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, color: textSecondary),
-            ),
+          child: Consumer<UserProfileService>(
+            builder: (context, userProfile, _) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  );
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: surfaceContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: userProfile.profileImageBase64 != null
+                      ? Image.memory(
+                          base64Decode(userProfile.profileImageBase64!),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, color: textSecondary),
+                        )
+                      : const Icon(Icons.person, color: textSecondary),
+                ),
+              );
+            },
           ),
         ),
         centerTitle: true,
@@ -63,9 +114,23 @@ class HomePage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 24.0),
-            child: IconButton(
-              icon: const Icon(Icons.notifications_none, color: textSecondary),
-              onPressed: () {},
+            child: Consumer<NotificationHistoryService>(
+              builder: (context, historyService, _) {
+                final unreadCount = historyService.unreadCount;
+                return IconButton(
+                  icon: Badge(
+                    isLabelVisible: unreadCount > 0,
+                    backgroundColor: Colors.redAccent,
+                    child: const Icon(Icons.notifications_none, color: textSecondary),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -76,14 +141,18 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Greeting
-            Text(
-              l10n.homeGreeting('Esduardo'),
-              style: const TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: textSecondary,
-              ),
+            Consumer<UserProfileService>(
+              builder: (context, userProfile, _) {
+                return Text(
+                  l10n.homeGreeting(userProfile.userName),
+                  style: const TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: textSecondary,
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 4),
             Text(
@@ -95,7 +164,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-
             // Daily Reflection Card
             Container(
               width: double.infinity,
@@ -138,34 +206,6 @@ class HomePage extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                       color: onPrimaryFixed,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: onPrimaryFixed,
-                      foregroundColor: primaryFixed,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.homeStartSession,
-                          style: const TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, size: 18),
-                      ],
                     ),
                   ),
                 ],
@@ -414,4 +454,5 @@ class HomePage extends StatelessWidget {
       color: activeFg,
     );
   }
+
 }

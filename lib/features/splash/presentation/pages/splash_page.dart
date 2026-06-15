@@ -4,7 +4,10 @@ import '../../../../../core/services/storage_service.dart';
 import '../../../../../core/services/location_service.dart';
 import '../../../../../core/services/session_service.dart';
 import '../../../../main.dart';
+import 'package:flutter/foundation.dart';
+import '../../../../../core/services/security_service.dart';
 import '../../../security/presentation/pages/fake_gps_page.dart';
+import '../../../security/presentation/pages/usb_debugging_page.dart';
 import '../../../auth/login/presentation/pages/login_page.dart';
 import '../../../home/presentation/pages/home_page.dart';
 
@@ -38,6 +41,19 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const FakeGpsPage()),
+      );
+      return;
+    }
+
+    // Validar Depuración USB en el arranque
+    final securityService = context.read<SecurityService>();
+    final isUsbDebugging = await securityService.isUsbDebuggingEnabled();
+
+    if (!mounted) return;
+    if (isUsbDebugging) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const UsbDebuggingPage()),
       );
       return;
     }
